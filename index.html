@@ -3,411 +3,277 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Selection Sort Algorithm</title>
+    <title>Selection Sort Visualization</title>
     <style>
-      :root {
-          --background-white: #f9f7f5;
-          --coffee-dark: #4a3f35;
-          --coffee-medium: #7f6355;
-          --coffee-light: #a68f7f;
-          --text-primary: #4a3f35;
-          --border-color: #d2c1b0;
-          --shadow: rgba(74, 63, 53, 0.1);
-      }
-      
-      * {
-          box-sizing: border-box;
-          margin: 0;
-          padding: 0;
-      }
-      
-      body {
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          display: flex;
-          flex-direction: column;
-          min-height: 100vh;
-          background: var(--background-white);
-          color: var(--text-primary);
-          line-height: 1.6;
-      }
-      
-      footer {
-           background: var(--coffee-dark);
-           color: white;
-           text-align: center;
-           padding: 1rem 0;
-           width: 100%;
-           font-weight: 300;
-           letter-spacing: 1px;
-      }
-      
-      header {
-          background: var(--coffee-dark);
-          color: white;
-          padding: 1.5rem 0;
-          text-align: center;
-          box-shadow: 0 2px 4px var(--shadow);
-      }
-      
-      h1 {
-          font-size: 2rem;
-          font-weight: 500;
-          color: white;
-          letter-spacing: 1px;
-      }
-      
-      h2 {
-          font-size: 1.8rem;
-          color: var(--coffee-medium);
-          margin: 1.5rem 0 1rem;
-      }
-      
-      .subtitle {
-          font-size: 1.1rem;
-          color: var(--coffee-light);
-          font-weight: 300;
-          opacity: 0.9;
-      }
-      
-      main {
-          max-width: 1200px;
-          width: 100%;
-          margin: 2rem auto;
-          padding: 0 1rem;
-          flex: 1;
-      }
-      
-      .container {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 2rem;
-          margin-bottom: 2rem;
-      }
-      
-      .info-section {
-          flex: 1;
-          min-width: 300px;
-          padding: 1rem 0;
-      }
-      
-      .info-section p {
-          margin-bottom: 1rem;
-          text-align: justify;
-      }
-      
-      .code-block {
-          background: #f4f1ee;
-          border-left: 4px solid var(--coffee-medium);
-          padding: 1rem;
-          margin: 1rem 0;
-          font-family: 'Courier New', Courier, monospace;
-          overflow-x: auto;
-          color: var(--text-primary);
-      }
-      
-      .demo-section {
-          flex: 1;
-          min-width: 300px;
-          display: flex;
-          flex-direction: column;
-          gap: 1.5rem;
-      }
-      
-      .input-area, .output-area {
-          padding: 0.5rem 0;
-      }
-      
-      h3 {
-          color: var(--coffee-dark);
-          margin-bottom: 1rem;
-          padding-bottom: 0.5rem;
-          border-bottom: 2px solid var(--coffee-medium);
-      }
-      
-      input {
-          width: 100%;
-          padding: 0.8rem;
-          margin: 0.5rem 0 1rem;
-          background: white;
-          border: 1px solid var(--border-color);
-          border-radius: 5px;
-          font-size: 1rem;
-          color: var(--text-primary);
-          transition: border-color 0.3s;
-      }
-      
-      input:focus {
-          border-color: var(--coffee-medium);
-          outline: none;
-      }
-      
-      button {
-          background: var(--coffee-medium);
-          color: white;
-          border: none;
-          padding: 0.8rem 1.5rem;
-          border-radius: 5px;
-          font-size: 1rem;
-          font-weight: 500;
-          cursor: pointer;
-          transition: all 0.3s;
-          display: block;
-          width: 100%;
-          margin: 0.5rem 0;
-      }
-      
-      button:hover {
-          background: var(--coffee-dark);
-          transform: translateY(-2px);
-          box-shadow: 0 2px 4px var(--shadow);
-      }
-      
-      .array-container {
-          display: flex;
-          justify-content: center;
-          flex-wrap: wrap;
-          gap: 0.5rem;
-          margin: 1rem 0;
-      }
-      
-      .element {
-          width: 50px;
-          height: 50px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          background: white;
-          border: 1px solid var(--border-color);
-          border-radius: 5px;
-          font-weight: bold;
-          font-size: 1.2rem;
-          position: relative;
-          transition: all 0.3s ease;
-          color: var(--text-primary);
-          box-shadow: 0 2px 4px var(--shadow);
-      }
-      
-      .element::after {
-          content: attr(data-index);
-          position: absolute;
-          bottom: -20px;
-          font-size: 0.8rem;
-          color: var(--coffee-light);
-      }
-      
-      .element.min {
-          background: var(--coffee-light);
-          transform: scale(1.1);
-          border-color: var(--coffee-medium);
-          z-index: 1;
-          color: white;
-      }
-      
-      .element.swapping {
-          background: var(--coffee-dark);
-          color: white;
-          transform: scale(1.15);
-          border-color: var(--coffee-medium);
-          z-index: 2;
-      }
-      
-      #message {
-          font-weight: 500;
-          padding: 0.8rem;
-          margin-top: 1rem;
-          text-align: center;
-          border-radius: 5px;
-          transition: all 0.3s;
-      }
-      
-      #message.success {
-          color: var(--coffee-dark);
-      }
-      
-      #message.error {
-          color: #a94442;
-      }
-      
-      #message.info {
-          color: var(--coffee-medium);
-      }
-      
-      @keyframes bounce {
-          0%, 100% { transform: translateY(0) scale(1.15); }
-          50% { transform: translateY(-10px) scale(1.2); }
-      }
-      
-      @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-8px); }
-          75% { transform: translateX(8px); }
-      }
-      
-      @media (max-width: 768px) {
-          .container {
-              flex-direction: column;
-          }
-          h1 {
-              font-size: 1.8rem;
-          }
-          .element {
-              width: 40px;
-              height: 40px;
-              font-size: 1rem;
-          }
-      }
-  </style>
+        :root {
+            --coffee-dark: #4a3f35;
+            --coffee-medium: #7f6355;
+            --coffee-light: #a68f7f;
+            --background-white: #f9f7f5;
+            --text-primary: #4a3f35;
+            --border-color: #d2c1b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: var(--background-white);
+            color: var(--text-primary);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--coffee-dark);
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            letter-spacing: 1px;
+        }
+
+        .content {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 20px;
+        }
+
+        .info-section, .visualization-section {
+            flex: 1;
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(74, 63, 53, 0.1);
+        }
+
+        .info-section h2, .visualization-section h2 {
+            color: var(--coffee-medium);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--coffee-light);
+            padding-bottom: 10px;
+        }
+
+        .input-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+        }
+
+        .button-container {
+            display: flex;
+            gap: 15px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: var(--coffee-medium);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: var(--coffee-dark);
+        }
+
+        .array-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+            flex-wrap: wrap;
+        }
+
+        .element {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: var(--coffee-light);
+            color: white;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .element.checking {
+            background-color: var(--coffee-dark);
+            transform: scale(1.1);
+        }
+
+        .element.swapping {
+            background-color: #a94442;
+            animation: swap 0.5s alternate 2;
+        }
+
+        @keyframes swap {
+            from { transform: translateY(0); }
+            to { transform: translateY(-10px); }
+        }
+
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            font-weight: bold;
+            color: var(--coffee-medium);
+        }
+
+        footer {
+            background-color: var(--coffee-dark);
+            color: white;
+            text-align: center;
+            padding: 15px 0;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-    <header>
-        <h1>Selection Sort Algorithm</h1>
-    </header>
-    
-    <main>
-        <div class="container">
-            <section class="info-section">
+    <div class="container">
+        <header>
+            <h1>Selection Sort Visualization</h1>
+        </header>
+
+        <div class="content">
+            <div class="info-section">
                 <h2>What is Selection Sort?</h2>
-                <p>Selection sort is a simple sorting algorithm that repeatedly finds the minimum element from the unsorted part of the array and places it at the beginning.</p>
+                <p>Selection sort is a simple sorting algorithm that works by repeatedly finding the minimum element from the unsorted part of an array and placing it at the beginning.</p>
                 
-                <p>The algorithm divides the input array into two parts: a sorted portion at the left end and an unsorted portion at the right end. It repeatedly selects the smallest element from the unsorted portion and moves it to the sorted portion.</p>
-                
-                <div class="code-block">
-                    function selectionSort(arr) {<br>
-                    &nbsp;&nbsp;for (let i = 0; i < arr.length - 1; i++) {<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;let minIndex = i;<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;for (let j = i + 1; j < arr.length; j++) {<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (arr[j] < arr[minIndex]) {<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;minIndex = j;<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;}<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;// Swap elements<br>
-                    &nbsp;&nbsp;&nbsp;&nbsp;[arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];<br>
-                    &nbsp;&nbsp;}<br>
-                    &nbsp;&nbsp;return arr;<br>
-                    }
-                </div>
-            </section>
-            
-            <section class="demo-section">
-                <div class="input-area">
-                    <h3>Setup Your Array</h3>
-                    <p>Enter numbers separated by spaces:</p>
-                    <input type="text" id="numbersInput" placeholder="e.g. 64 25 12 22 11">
-                    <button id="setArrayBtn">Set Array</button>
+                <p>Key characteristics of Selection Sort:</p>
+                <ul>
+                    <li>Time Complexity: O(n²) - makes it inefficient for large lists</li>
+                    <li>In-place sorting algorithm (requires minimal additional memory)</li>
+                    <li>Simple to understand and implement</li>
+                    <li>Performs well on small lists or arrays</li>
+                </ul>
+
+                <p>How it works:</p>
+                <ol>
+                    <li>Divide the input list into two parts: sorted and unsorted</li>
+                    <li>Find the smallest element in the unsorted portion</li>
+                    <li>Swap it with the first unsorted element</li>
+                    <li>Repeat until the entire list is sorted</li>
+                </ol>
+            </div>
+
+            <div class="visualization-section">
+                <h2>Sorting Demonstration</h2>
+                <div class="input-container">
+                    <input type="text" id="numbersInput" placeholder="Enter numbers separated by spaces (e.g. 64 25 12 22 11)">
                     
-                    <button id="sortBtn">Start Selection Sort</button>
+                    <div class="button-container">
+                        <button onclick="setNumbers()">Set Numbers</button>
+                        <button onclick="selectionSortVisualization()">Sort</button>
+                    </div>
                 </div>
-                
-                <div class="output-area">
-                    <h3>Visualization</h3>
-                    <div class="array-container" id="arrayContainer"></div>
-                    <div id="message" class="info">Enter your array to begin sorting</div>
-                </div>
-            </section>
+
+                <div class="array-container" id="arrayContainer"></div>
+                <div id="message" class="message"></div>
+            </div>
         </div>
-    </main>
-    <footer>
-        Created by: Jeziel Meniano BSCS-3
-    </footer>
+
+        <footer>
+            Created by: Jeziel Meniano BSCS-3
+        </footer>
+    </div>
+
     <script>
         let numbers = [];
 
-function setNumbers() {
-    const input = document.getElementById("numbersInput").value.trim();
-    const numArray = input.split(" ").map(num => parseInt(num.trim())).filter(num => !isNaN(num));
+        function setNumbers() {
+            const input = document.getElementById("numbersInput").value.trim();
+            const numArray = input.split(" ").map(num => parseInt(num.trim())).filter(num => !isNaN(num));
 
-    if (numArray.length === 0) {
-        alert("Please enter at least one valid number.");
-        return;
-    }
-
-    numbers = numArray;
-    createArrayUI();
-    document.getElementById("message").innerText = "Numbers set successfully! Click 'Start Selection Sort' to begin.";
-    document.getElementById("message").className = "success";
-}
-
-function createArrayUI() {
-    const container = document.getElementById("arrayContainer");
-    container.innerHTML = ""; 
-    numbers.forEach((num, index) => {
-        let div = document.createElement("div");
-        div.classList.add("element");
-        div.innerText = num;
-        div.setAttribute('data-index', index);
-        container.appendChild(div);
-    });
-}
-
-async function selectionSortVisualization() {
-    const sortBtn = document.getElementById("sortBtn");
-    const setArrayBtn = document.getElementById("setArrayBtn");
-    const messageElement = document.getElementById("message");
-    const container = document.getElementById("arrayContainer");
-
-    // Check if array is empty
-    if (numbers.length === 0) {
-        alert("Please set an array first!");
-        return;
-    }
-
-    // Disable buttons during sorting
-    sortBtn.disabled = true;
-    setArrayBtn.disabled = true;
-
-    try {
-        let n = numbers.length;
-
-        for (let i = 0; i < n - 1; i++) {
-            let minIndex = i;
-            
-            // Find the minimum element in unsorted array
-            for (let j = i + 1; j < n; j++) {
-                if (numbers[j] < numbers[minIndex]) {
-                    minIndex = j;
-                }
+            if (numArray.length === 0) {
+                alert("Please enter at least one valid number.");
+                return;
             }
 
-            // Swap the found minimum element with the first element
-            if (minIndex !== i) {
-                [numbers[i], numbers[minIndex]] = [numbers[minIndex], numbers[i]];
-                
-                // Recreate UI to show current state
-                createArrayUI();
-                
-                // Add visual effect
-                const elements = container.children;
-                elements[i].classList.add("swapping");
-                elements[minIndex].classList.add("swapping");
-                
-                // Pause to show visualization
-                await new Promise(resolve => setTimeout(resolve, 500));
-                
-                // Remove swapping class
-                elements[i].classList.remove("swapping");
-                elements[minIndex].classList.remove("swapping");
-            }
+            numbers = numArray;
+            createArrayUI();
+            document.getElementById("message").innerText = "Numbers set successfully! Click 'Sort' to start Selection Sort.";
         }
 
-        messageElement.innerText = "Sorting complete!";
-        messageElement.className = "success";
-    } catch (error) {
-        messageElement.innerText = "An error occurred during sorting.";
-        messageElement.className = "error";
-        console.error(error);
-    } finally {
-        // Re-enable buttons
-        sortBtn.disabled = false;
-        setArrayBtn.disabled = false;
-    }
-}
+        function createArrayUI() {
+            const container = document.getElementById("arrayContainer");
+            container.innerHTML = ""; 
+            numbers.forEach(num => {
+                let div = document.createElement("div");
+                div.classList.add("element");
+                div.innerText = num;
+                container.appendChild(div);
+            });
+        }
 
-// Attach event listeners when the page loads
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById("setArrayBtn").addEventListener('click', setNumbers);
-    document.getElementById("sortBtn").addEventListener('click', selectionSortVisualization);
-});
+        async function selectionSortVisualization() {
+            const elements = document.getElementsByClassName("element");
+            let n = numbers.length;
+
+            for (let i = 0; i < n - 1; i++) {
+                let minIndex = i;
+                elements[minIndex].classList.add("checking");
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                for (let j = i + 1; j < n; j++) {
+                    elements[j].classList.add("checking");
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    if (numbers[j] < numbers[minIndex]) {
+                        elements[minIndex].classList.remove("checking");
+                        minIndex = j;
+                        elements[minIndex].classList.add("checking");
+                    }
+                    elements[j].classList.remove("checking");
+                }
+
+                if (minIndex !== i) {
+                    elements[minIndex].classList.add("swapping");
+                    elements[i].classList.add("swapping");
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    [numbers[i], numbers[minIndex]] = [numbers[minIndex], numbers[i]];
+                    createArrayUI();
+
+                    elements[minIndex].classList.remove("swapping");
+                    elements[i].classList.remove("swapping");
+                }
+                elements[i].classList.remove("checking");
+            }
+            document.getElementById("message").innerText = "Sorting complete!";
+        }
     </script>
-                        
 </body>
 </html>
