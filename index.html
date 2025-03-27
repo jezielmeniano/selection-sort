@@ -310,7 +310,7 @@
         Created by: Jeziel Meniano BSCS-3
     </footer>
     <script>
-     let numbers = [];
+        let numbers = [];
 
 function setNumbers() {
     const input = document.getElementById("numbersInput").value.trim();
@@ -323,7 +323,7 @@ function setNumbers() {
 
     numbers = numArray;
     createArrayUI();
-    document.getElementById("message").innerText = "Numbers set successfully! Click 'Sort' to start Selection Sort.";
+    document.getElementById("message").innerText = "Numbers set successfully! Click 'Start Selection Sort' to begin.";
     document.getElementById("message").className = "success";
 }
 
@@ -343,7 +343,13 @@ async function selectionSortVisualization() {
     const sortBtn = document.getElementById("sortBtn");
     const setArrayBtn = document.getElementById("setArrayBtn");
     const messageElement = document.getElementById("message");
-    const elements = document.getElementsByClassName("element");
+    const container = document.getElementById("arrayContainer");
+
+    // Check if array is empty
+    if (numbers.length === 0) {
+        alert("Please set an array first!");
+        return;
+    }
 
     // Disable buttons during sorting
     sortBtn.disabled = true;
@@ -354,32 +360,33 @@ async function selectionSortVisualization() {
 
         for (let i = 0; i < n - 1; i++) {
             let minIndex = i;
-            elements[minIndex].classList.add("min");
-            await new Promise(resolve => setTimeout(resolve, 500));
-
+            
+            // Find the minimum element in unsorted array
             for (let j = i + 1; j < n; j++) {
                 if (numbers[j] < numbers[minIndex]) {
-                    elements[minIndex].classList.remove("min");
                     minIndex = j;
-                    elements[minIndex].classList.add("min");
                 }
-                await new Promise(resolve => setTimeout(resolve, 500));
             }
 
+            // Swap the found minimum element with the first element
             if (minIndex !== i) {
-                elements[minIndex].classList.add("swapping");
-                elements[i].classList.add("swapping");
-                await new Promise(resolve => setTimeout(resolve, 500));
-
-                // Swap values
                 [numbers[i], numbers[minIndex]] = [numbers[minIndex], numbers[i]];
+                
+                // Recreate UI to show current state
                 createArrayUI();
-
-                elements[minIndex].classList.remove("swapping");
+                
+                // Add visual effect
+                const elements = container.children;
+                elements[i].classList.add("swapping");
+                elements[minIndex].classList.add("swapping");
+                
+                // Pause to show visualization
+                await new Promise(resolve => setTimeout(resolve, 500));
+                
+                // Remove swapping class
                 elements[i].classList.remove("swapping");
+                elements[minIndex].classList.remove("swapping");
             }
-            
-            elements[i].classList.remove("min");
         }
 
         messageElement.innerText = "Sorting complete!";
@@ -395,11 +402,12 @@ async function selectionSortVisualization() {
     }
 }
 
-// Add event listeners after page load
+// Attach event listeners when the page loads
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById("setArrayBtn").addEventListener('click', setNumbers);
     document.getElementById("sortBtn").addEventListener('click', selectionSortVisualization);
 });
     </script>
+                        
 </body>
 </html>
