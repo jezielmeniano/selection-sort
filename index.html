@@ -310,131 +310,69 @@
         Created by: Jeziel Meniano BSCS-3
     </footer>
     <script>
-        // The JavaScript remains the same as in the previous version
-        // Variables
-        let numbers = [];
-        let sortInterval = null;
-        
-        // DOM elements
-        const numbersInput = document.getElementById("numbersInput");
-        const setArrayBtn = document.getElementById("setArrayBtn");
-        const sortBtn = document.getElementById("sortBtn");
-        const arrayContainer = document.getElementById("arrayContainer");
-        const messageDiv = document.getElementById("message");
-        
-        // Event listeners
-        setArrayBtn.addEventListener("click", setNumbers);
-        sortBtn.addEventListener("click", startSelectionSort);
-        
-        // Initialize with sample array
-        numbersInput.value = "64 25 12 22 11";
-        setNumbers();
-        
-        // Functions
+       let numbers = [];
+
         function setNumbers() {
-            const input = numbersInput.value.trim();
-            const numArray = input.split(" ")
-                .map(num => parseInt(num.trim()))
-                .filter(num => !isNaN(num));
-            
+            const input = document.getElementById("numbersInput").value.trim();
+            const numArray = input.split(" ").map(num => parseInt(num.trim())).filter(num => !isNaN(num));
+
             if (numArray.length === 0) {
-                messageDiv.innerText = "Please enter at least one valid number.";
-                messageDiv.className = "error";
+                alert("Please enter at least one valid number.");
                 return;
             }
-            
+
             numbers = numArray;
             createArrayUI();
-            messageDiv.innerText = "Array set successfully! Click Start Selection Sort.";
-            messageDiv.className = "info";
+            document.getElementById("message").innerText = "Numbers set successfully! Click 'Sort' to start Selection Sort.";
         }
-        
+
         function createArrayUI() {
-            arrayContainer.innerHTML = "";
-            
-            numbers.forEach((num, index) => {
-                const div = document.createElement("div");
+            const container = document.getElementById("arrayContainer");
+            container.innerHTML = ""; 
+            numbers.forEach(num => {
+                let div = document.createElement("div");
                 div.classList.add("element");
                 div.innerText = num;
-                div.setAttribute("data-index", index);
-                arrayContainer.appendChild(div);
+                container.appendChild(div);
             });
         }
-        
-        function startSelectionSort() {
-            // Clear any previous sort
-            if (sortInterval) {
-                clearInterval(sortInterval);
-            }
-            
-            if (numbers.length === 0) {
-                messageDiv.innerText = "Please set the array first.";
-                messageDiv.className = "error";
-                return;
-            }
-            
-            // Reset UI
-            createArrayUI();
-            messageDiv.innerText = "Sorting...";
-            messageDiv.className = "info";
-            
-            const elements = document.querySelectorAll(".element");
-            let i = 0;
-            let j = 0;
-            let minIndex = 0;
-            
-            sortInterval = setInterval(() => {
-                // Remove previous min and swapping styles
-                elements.forEach(el => {
-                    el.classList.remove("min", "swapping");
-                });
-                
-                // If the outer loop is complete, end sorting
-                if (i >= numbers.length - 1) {
-                    clearInterval(sortInterval);
-                    messageDiv.innerText = "Array sorted successfully!";
-                    messageDiv.className = "success";
-                    return;
-                }
-                
-                // Find the minimum element
-                if (j < numbers.length) {
-                    // Highlight the current min
-                    elements[minIndex].classList.add("min");
-                    
-                    // If we found a smaller element, update minIndex
+
+        async function selectionSortVisualization() {
+            const elements = document.getElementsByClassName("element");
+            let n = numbers.length;
+
+            for (let i = 0; i < n - 1; i++) {
+                let minIndex = i;
+                elements[minIndex].classList.add("checking");
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                for (let j = i + 1; j < n; j++) {
+                    elements[j].classList.add("checking");
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
                     if (numbers[j] < numbers[minIndex]) {
+                        elements[minIndex].classList.remove("checking");
                         minIndex = j;
+                        elements[minIndex].classList.add("checking");
                     }
-                    
-                    j++;
-                } else {
-                    // Swap the minimum element with the first unsorted element
-                    let temp = numbers[i];
-                    numbers[i] = numbers[minIndex];
-                    numbers[minIndex] = temp;
-                    
-                    // Visually swap elements
-                    elements[i].innerText = numbers[i];
-                    elements[minIndex].innerText = numbers[minIndex];
-                    elements[i].classList.add("swapping");
-                    elements[minIndex].classList.add("swapping");
-                    
-                    // Reset for next iteration
-                    i++;
-                    j = i + 1;
-                    minIndex = i;
+                    elements[j].classList.remove("checking");
                 }
-            }, 450); // Speed of animation (milliseconds)
-        }
-        
-        // Handle Enter key press
-        numbersInput.addEventListener("keypress", function(event) {
-            if (event.key === "Enter") {
-                event.preventDefault();
-                setNumbers();
+
+                if (minIndex !== i) {
+                    elements[minIndex].classList.add("swapping");
+                    elements[i].classList.add("swapping");
+                    await new Promise(resolve => setTimeout(resolve, 500));
+
+                    [numbers[i], numbers[minIndex]] = [numbers[minIndex], numbers[i]];
+                    createArrayUI();
+
+                    elements[minIndex].classList.remove("swapping");
+                    elements[i].classList.remove("swapping");
+                }
+                elements[i].classList.remove("checking");
             }
-        });
+            document.getElementById("message").innerText = "Sorting complete!";
+        }
     </script>
 </body>
 </html>
