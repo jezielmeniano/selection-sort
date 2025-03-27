@@ -310,69 +310,96 @@
         Created by: Jeziel Meniano BSCS-3
     </footer>
     <script>
-       let numbers = [];
+     let numbers = [];
 
-        function setNumbers() {
-            const input = document.getElementById("numbersInput").value.trim();
-            const numArray = input.split(" ").map(num => parseInt(num.trim())).filter(num => !isNaN(num));
+function setNumbers() {
+    const input = document.getElementById("numbersInput").value.trim();
+    const numArray = input.split(" ").map(num => parseInt(num.trim())).filter(num => !isNaN(num));
 
-            if (numArray.length === 0) {
-                alert("Please enter at least one valid number.");
-                return;
+    if (numArray.length === 0) {
+        alert("Please enter at least one valid number.");
+        return;
+    }
+
+    numbers = numArray;
+    createArrayUI();
+    document.getElementById("message").innerText = "Numbers set successfully! Click 'Sort' to start Selection Sort.";
+    document.getElementById("message").className = "success";
+}
+
+function createArrayUI() {
+    const container = document.getElementById("arrayContainer");
+    container.innerHTML = ""; 
+    numbers.forEach((num, index) => {
+        let div = document.createElement("div");
+        div.classList.add("element");
+        div.innerText = num;
+        div.setAttribute('data-index', index);
+        container.appendChild(div);
+    });
+}
+
+async function selectionSortVisualization() {
+    const sortBtn = document.getElementById("sortBtn");
+    const setArrayBtn = document.getElementById("setArrayBtn");
+    const messageElement = document.getElementById("message");
+    const elements = document.getElementsByClassName("element");
+
+    // Disable buttons during sorting
+    sortBtn.disabled = true;
+    setArrayBtn.disabled = true;
+
+    try {
+        let n = numbers.length;
+
+        for (let i = 0; i < n - 1; i++) {
+            let minIndex = i;
+            elements[minIndex].classList.add("min");
+            await new Promise(resolve => setTimeout(resolve, 500));
+
+            for (let j = i + 1; j < n; j++) {
+                if (numbers[j] < numbers[minIndex]) {
+                    elements[minIndex].classList.remove("min");
+                    minIndex = j;
+                    elements[minIndex].classList.add("min");
+                }
+                await new Promise(resolve => setTimeout(resolve, 500));
             }
 
-            numbers = numArray;
-            createArrayUI();
-            document.getElementById("message").innerText = "Numbers set successfully! Click 'Sort' to start Selection Sort.";
-        }
-
-        function createArrayUI() {
-            const container = document.getElementById("arrayContainer");
-            container.innerHTML = ""; 
-            numbers.forEach(num => {
-                let div = document.createElement("div");
-                div.classList.add("element");
-                div.innerText = num;
-                container.appendChild(div);
-            });
-        }
-
-        async function selectionSortVisualization() {
-            const elements = document.getElementsByClassName("element");
-            let n = numbers.length;
-
-            for (let i = 0; i < n - 1; i++) {
-                let minIndex = i;
-                elements[minIndex].classList.add("checking");
+            if (minIndex !== i) {
+                elements[minIndex].classList.add("swapping");
+                elements[i].classList.add("swapping");
                 await new Promise(resolve => setTimeout(resolve, 500));
 
-                for (let j = i + 1; j < n; j++) {
-                    elements[j].classList.add("checking");
-                    await new Promise(resolve => setTimeout(resolve, 500));
+                // Swap values
+                [numbers[i], numbers[minIndex]] = [numbers[minIndex], numbers[i]];
+                createArrayUI();
 
-                    if (numbers[j] < numbers[minIndex]) {
-                        elements[minIndex].classList.remove("checking");
-                        minIndex = j;
-                        elements[minIndex].classList.add("checking");
-                    }
-                    elements[j].classList.remove("checking");
-                }
-
-                if (minIndex !== i) {
-                    elements[minIndex].classList.add("swapping");
-                    elements[i].classList.add("swapping");
-                    await new Promise(resolve => setTimeout(resolve, 500));
-
-                    [numbers[i], numbers[minIndex]] = [numbers[minIndex], numbers[i]];
-                    createArrayUI();
-
-                    elements[minIndex].classList.remove("swapping");
-                    elements[i].classList.remove("swapping");
-                }
-                elements[i].classList.remove("checking");
+                elements[minIndex].classList.remove("swapping");
+                elements[i].classList.remove("swapping");
             }
-            document.getElementById("message").innerText = "Sorting complete!";
+            
+            elements[i].classList.remove("min");
         }
+
+        messageElement.innerText = "Sorting complete!";
+        messageElement.className = "success";
+    } catch (error) {
+        messageElement.innerText = "An error occurred during sorting.";
+        messageElement.className = "error";
+        console.error(error);
+    } finally {
+        // Re-enable buttons
+        sortBtn.disabled = false;
+        setArrayBtn.disabled = false;
+    }
+}
+
+// Add event listeners after page load
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById("setArrayBtn").addEventListener('click', setNumbers);
+    document.getElementById("sortBtn").addEventListener('click', selectionSortVisualization);
+});
     </script>
 </body>
 </html>
