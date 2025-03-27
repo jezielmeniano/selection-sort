@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Selection Sort Algorithm</title>
+    <style>
+      :root {
+          --background-white: #f9f7f5;
+          --coffee-dark: #4a3f35;
+          --coffee-medium: #7f6355;
+          --coffee-light: #a68f7f;
+          --text-primary: #4a3f35;
+          --border-color: #d2c1b0;
+          --shadow: rgba(74, 63, 53, 0.1);
+      }
+      
+      * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+      }
+      
+      body {
+          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+          display: flex;
+          flex-direction: column;
+          min-height: 100vh;
+          background: var(--background-white);
+          color: var(--text-primary);
+          line-height: 1.6;
+      }
+      
+      footer {
+           background: var(--coffee-dark);
+           color: white;
+           text-align: center;
+           padding: 1rem 0;
+           width: 100%;
+           font-weight: 300;
+           letter-spacing: 1px;
+      }
+      
+      header {
+          background: var(--coffee-dark);
+          color: white;
+          padding: 1.5rem 0;
+          text-align: center;
+          box-shadow: 0 2px 4px var(--shadow);
+      }
+      
+      h1 {
+          font-size: 2rem;
+          font-weight: 500;
+          color: white;
+          letter-spacing: 1px;
+      }
+      
+      h2 {
+          font-size: 1.8rem;
+          color: var(--coffee-medium);
+          margin: 1.5rem 0 1rem;
+      }
+      
+      .subtitle {
+          font-size: 1.1rem;
+          color: var(--coffee-light);
+          font-weight: 300;
+          opacity: 0.9;
+      }
+      
+      main {
+          max-width: 1200px;
+          width: 100%;
+          margin: 2rem auto;
+          padding: 0 1rem;
+          flex: 1;
+      }
+      
+      .container {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 2rem;
+          margin-bottom: 2rem;
+      }
+      
+      .info-section {
+          flex: 1;
+          min-width: 300px;
+          padding: 1rem 0;
+      }
+      
+      .info-section p {
+          margin-bottom: 1rem;
+          text-align: justify;
+      }
+      
+      .code-block {
+          background: #f4f1ee;
+          border-left: 4px solid var(--coffee-medium);
+          padding: 1rem;
+          margin: 1rem 0;
+          font-family: 'Courier New', Courier, monospace;
+          overflow-x: auto;
+          color: var(--text-primary);
+      }
+      
+      .demo-section {
+          flex: 1;
+          min-width: 300px;
+          display: flex;
+          flex-direction: column;
+          gap: 1.5rem;
+      }
+      
+      .input-area, .output-area {
+          padding: 0.5rem 0;
+      }
+      
+      h3 {
+          color: var(--coffee-dark);
+          margin-bottom: 1rem;
+          padding-bottom: 0.5rem;
+          border-bottom: 2px solid var(--coffee-medium);
+      }
+      
+      input {
+          width: 100%;
+          padding: 0.8rem;
+          margin: 0.5rem 0 1rem;
+          background: white;
+          border: 1px solid var(--border-color);
+          border-radius: 5px;
+          font-size: 1rem;
+          color: var(--text-primary);
+          transition: border-color 0.3s;
+      }
+      
+      input:focus {
+          border-color: var(--coffee-medium);
+          outline: none;
+      }
+      
+      button {
+          background: var(--coffee-medium);
+          color: white;
+          border: none;
+          padding: 0.8rem 1.5rem;
+          border-radius: 5px;
+          font-size: 1rem;
+          font-weight: 500;
+          cursor: pointer;
+          transition: all 0.3s;
+          display: block;
+          width: 100%;
+          margin: 0.5rem 0;
+      }
+      
+      button:hover {
+          background: var(--coffee-dark);
+          transform: translateY(-2px);
+          box-shadow: 0 2px 4px var(--shadow);
+      }
+      
+      .array-container {
+          display: flex;
+          justify-content: center;
+          flex-wrap: wrap;
+          gap: 0.5rem;
+          margin: 1rem 0;
+      }
+      
+      .element {
+          width: 50px;
+          height: 50px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: white;
+          border: 1px solid var(--border-color);
+          border-radius: 5px;
+          font-weight: bold;
+          font-size: 1.2rem;
+          position: relative;
+          transition: all 0.3s ease;
+          color: var(--text-primary);
+          box-shadow: 0 2px 4px var(--shadow);
+      }
+      
+      .element::after {
+          content: attr(data-index);
+          position: absolute;
+          bottom: -20px;
+          font-size: 0.8rem;
+          color: var(--coffee-light);
+      }
+      
+      .element.min {
+          background: var(--coffee-light);
+          transform: scale(1.1);
+          border-color: var(--coffee-medium);
+          z-index: 1;
+          color: white;
+      }
+      
+      .element.swapping {
+          background: var(--coffee-dark);
+          color: white;
+          transform: scale(1.15);
+          border-color: var(--coffee-medium);
+          z-index: 2;
+      }
+      
+      #message {
+          font-weight: 500;
+          padding: 0.8rem;
+          margin-top: 1rem;
+          text-align: center;
+          border-radius: 5px;
+          transition: all 0.3s;
+      }
+      
+      #message.success {
+          color: var(--coffee-dark);
+      }
+      
+      #message.error {
+          color: #a94442;
+      }
+      
+      #message.info {
+          color: var(--coffee-medium);
+      }
+      
+      @keyframes bounce {
+          0%, 100% { transform: translateY(0) scale(1.15); }
+          50% { transform: translateY(-10px) scale(1.2); }
+      }
+      
+      @keyframes shake {
+          0%, 100% { transform: translateX(0); }
+          25% { transform: translateX(-8px); }
+          75% { transform: translateX(8px); }
+      }
+      
+      @media (max-width: 768px) {
+          .container {
+              flex-direction: column;
+          }
+          h1 {
+              font-size: 1.8rem;
+          }
+          .element {
+              width: 40px;
+              height: 40px;
+              font-size: 1rem;
+          }
+      }
+  </style>
+</head>
+<body>
+    <header>
+        <h1>Selection Sort Algorithm</h1>
+    </header>
+    
+    <main>
+        <div class="container">
+            <section class="info-section">
+                <h2>What is Selection Sort?</h2>
+                <p>Selection sort is a simple sorting algorithm that repeatedly finds the minimum element from the unsorted part of the array and places it at the beginning.</p>
+                
+                <p>The algorithm divides the input array into two parts: a sorted portion at the left end and an unsorted portion at the right end. It repeatedly selects the smallest element from the unsorted portion and moves it to the sorted portion.</p>
+                
+                <div class="code-block">
+                    function selectionSort(arr) {<br>
+                    &nbsp;&nbsp;for (let i = 0; i < arr.length - 1; i++) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;let minIndex = i;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;for (let j = i + 1; j < arr.length; j++) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (arr[j] < arr[minIndex]) {<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;minIndex = j;<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;}<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;// Swap elements<br>
+                    &nbsp;&nbsp;&nbsp;&nbsp;[arr[i], arr[minIndex]] = [arr[minIndex], arr[i]];<br>
+                    &nbsp;&nbsp;}<br>
+                    &nbsp;&nbsp;return arr;<br>
+                    }
+                </div>
+            </section>
+            
+            <section class="demo-section">
+                <div class="input-area">
+                    <h3>Setup Your Array</h3>
+                    <p>Enter numbers separated by spaces:</p>
+                    <input type="text" id="numbersInput" placeholder="e.g. 64 25 12 22 11">
+                    <button id="setArrayBtn">Set Array</button>
+                    
+                    <button id="sortBtn">Start Selection Sort</button>
+                </div>
+                
+                <div class="output-area">
+                    <h3>Visualization</h3>
+                    <div class="array-container" id="arrayContainer"></div>
+                    <div id="message" class="info">Enter your array to begin sorting</div>
+                </div>
+            </section>
+        </div>
+    </main>
+    <footer>
+        Created by: Jeziel Meniano BSCS-3
+    </footer>
+    <script>
+        // The JavaScript remains the same as in the previous version
+        // Variables
+        let numbers = [];
+        let sortInterval = null;
+        
+        // DOM elements
+        const numbersInput = document.getElementById("numbersInput");
+        const setArrayBtn = document.getElementById("setArrayBtn");
+        const sortBtn = document.getElementById("sortBtn");
+        const arrayContainer = document.getElementById("arrayContainer");
+        const messageDiv = document.getElementById("message");
+        
+        // Event listeners
+        setArrayBtn.addEventListener("click", setNumbers);
+        sortBtn.addEventListener("click", startSelectionSort);
+        
+        // Initialize with sample array
+        numbersInput.value = "64 25 12 22 11";
+        setNumbers();
+        
+        // Functions
+        function setNumbers() {
+            const input = numbersInput.value.trim();
+            const numArray = input.split(" ")
+                .map(num => parseInt(num.trim()))
+                .filter(num => !isNaN(num));
+            
+            if (numArray.length === 0) {
+                messageDiv.innerText = "Please enter at least one valid number.";
+                messageDiv.className = "error";
+                return;
+            }
+            
+            numbers = numArray;
+            createArrayUI();
+            messageDiv.innerText = "Array set successfully! Click Start Selection Sort.";
+            messageDiv.className = "info";
+        }
+        
+        function createArrayUI() {
+            arrayContainer.innerHTML = "";
+            
+            numbers.forEach((num, index) => {
+                const div = document.createElement("div");
+                div.classList.add("element");
+                div.innerText = num;
+                div.setAttribute("data-index", index);
+                arrayContainer.appendChild(div);
+            });
+        }
+        
+        function startSelectionSort() {
+            // Clear any previous sort
+            if (sortInterval) {
+                clearInterval(sortInterval);
+            }
+            
+            if (numbers.length === 0) {
+                messageDiv.innerText = "Please set the array first.";
+                messageDiv.className = "error";
+                return;
+            }
+            
+            // Reset UI
+            createArrayUI();
+            messageDiv.innerText = "Sorting...";
+            messageDiv.className = "info";
+            
+            const elements = document.querySelectorAll(".element");
+            let i = 0;
+            let j = 0;
+            let minIndex = 0;
+            
+            sortInterval = setInterval(() => {
+                // Remove previous min and swapping styles
+                elements.forEach(el => {
+                    el.classList.remove("min", "swapping");
+                });
+                
+                // If the outer loop is complete, end sorting
+                if (i >= numbers.length - 1) {
+                    clearInterval(sortInterval);
+                    messageDiv.innerText = "Array sorted successfully!";
+                    messageDiv.className = "success";
+                    return;
+                }
+                
+                // Find the minimum element
+                if (j < numbers.length) {
+                    // Highlight the current min
+                    elements[minIndex].classList.add("min");
+                    
+                    // If we found a smaller element, update minIndex
+                    if (numbers[j] < numbers[minIndex]) {
+                        minIndex = j;
+                    }
+                    
+                    j++;
+                } else {
+                    // Swap the minimum element with the first unsorted element
+                    let temp = numbers[i];
+                    numbers[i] = numbers[minIndex];
+                    numbers[minIndex] = temp;
+                    
+                    // Visually swap elements
+                    elements[i].innerText = numbers[i];
+                    elements[minIndex].innerText = numbers[minIndex];
+                    elements[i].classList.add("swapping");
+                    elements[minIndex].classList.add("swapping");
+                    
+                    // Reset for next iteration
+                    i++;
+                    j = i + 1;
+                    minIndex = i;
+                }
+            }, 800); // Speed of animation (milliseconds)
+        }
+        
+        // Handle Enter key press
+        numbersInput.addEventListener("keypress", function(event) {
+            if (event.key === "Enter") {
+                event.preventDefault();
+                setNumbers();
+            }
+        });
+    </script>
+</body>
+</html>
