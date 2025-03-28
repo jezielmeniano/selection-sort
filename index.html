@@ -42,6 +42,7 @@
             text-align: center;
             padding: 20px 0;
             margin-bottom: 20px;
+            width: 100%;
         }
 
         h1 {
@@ -57,10 +58,6 @@
 
         .info-section, .visualization-section {
             flex: 1;
-            background-color: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(74, 63, 53, 0.1);
         }
 
         .info-section h2, .visualization-section h2 {
@@ -152,6 +149,7 @@
             text-align: center;
             padding: 15px 0;
             margin-top: auto;
+            width: 100%;
         }
 
         @media (max-width: 768px) {
@@ -172,6 +170,26 @@
                 <h2>What is Selection Sort?</h2>
                 <p>Selection sort is a simple sorting algorithm that works by repeatedly finding the minimum element from the unsorted part of an array and placing it at the beginning.</p>
                 
+                <h2>Selection Sort Code Explanation</h2>
+                <pre style="background-color: #f4f4f4; padding: 10px; border-radius: 5px; overflow-x: auto;">
+function selectionSort(arr) {
+    let n = arr.length;
+    for (let i = 0; i < n - 1; i++) {
+        let minIndex = i;
+        for (let j = i + 1; j < n; j++) {
+            if (arr[j] < arr[minIndex]) {
+                minIndex = j;
+            }
+        }
+        if (minIndex !== i) {
+            let temp = arr[i];
+            arr[i] = arr[minIndex];
+            arr[minIndex] = temp;
+        }
+    }
+    return arr;
+}
+                </pre>
             </div>
 
             <div class="visualization-section">
@@ -249,7 +267,9 @@
                     elements[i].classList.add("swapping");
                     await new Promise(resolve => setTimeout(resolve, 500));
 
-                    [numbers[i], numbers[minIndex]] = [numbers[minIndex], numbers[i]];
+                    let temp = numbers[i];
+                    numbers[i] = numbers[minIndex];
+                    numbers[minIndex] = temp;
                     createArrayUI();
 
                     elements[minIndex].classList.remove("swapping");
